@@ -1,0 +1,11 @@
+1. Kafka Server Start command
+
+docker run -p 9092:9092 apache/kafka:4.1.0
+
+2. CloudFlared Tunnel Start command
+
+cloudflared tunnel --url http://localhost:5050
+
+3. MySQL Password
+
+arpitamittal
