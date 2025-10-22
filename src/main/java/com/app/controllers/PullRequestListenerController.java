@@ -2,15 +2,15 @@ package com.app.controllers;
 
 // Webhook for listening pull requests
 
-import com.app.data.PullRequestListenerResponse;
-import com.app.services.PullRequestListenerService;
+import com.app.listeners.request.PullEditRequest;
+import com.app.listeners.response.PullListenerResponse;
+import com.app.services.PullListenerService;
+import com.app.services.PullListenerServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -18,15 +18,14 @@ import java.util.Map;
 @ResponseBody
 @RequiredArgsConstructor
 public class PullRequestListenerController {
+  private final PullListenerService pullRequestListenerService;
 
-  private final PullRequestListenerService pullRequestListenerService;
-
-  @PostMapping("/listen")
-  public ResponseEntity<?> listen(@RequestBody Map<String, Object> request) throws Exception {
-    pullRequestListenerService.publishEvent(request);
-    return ResponseEntity.status(HttpStatus.ACCEPTED)
-        .body(PullRequestListenerResponse.builder().status("Success").build());
-  }
+  //  @PostMapping("/listen")
+  //  public ResponseEntity<?> listen(@RequestBody Map<String, Object> request) throws Exception {
+  //    pullRequestListenerService.publishEvent(request);
+  //    return ResponseEntity.status(HttpStatus.ACCEPTED)
+  //        .body(PullRequestListenerResponse.builder().status("Success").build());
+  //  }
 
   //    @GetMapping("/listen")
   //    public ResponseEntity<?> listen() {
@@ -37,4 +36,11 @@ public class PullRequestListenerController {
   //        return ResponseEntity.status(HttpStatus.ACCEPTED)
   //                .body(PullRequestListenerResponse.builder().status("Success").build());
   //    }
+
+  @PostMapping("/listen")
+  public ResponseEntity<PullListenerResponse> getPullRequestListenerResponse(
+      @RequestBody PullEditRequest request) {
+    PullListenerResponse response = pullRequestListenerService.publishEvent(request);
+    return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+  }
 }

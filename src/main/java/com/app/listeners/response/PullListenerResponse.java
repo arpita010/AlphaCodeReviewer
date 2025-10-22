@@ -1,5 +1,6 @@
-package com.app.data;
+package com.app.listeners.response;
 
+import com.app.constants.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PullRequestListenerResponse {
-    private String status;
+public class PullListenerResponse {
+  private ApiResponse status;
+  private String message;
 }
