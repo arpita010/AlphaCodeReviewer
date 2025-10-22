@@ -5,7 +5,6 @@ package com.app.controllers;
 import com.app.listeners.request.PullEditRequest;
 import com.app.listeners.response.PullListenerResponse;
 import com.app.services.PullListenerService;
-import com.app.services.PullListenerServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
