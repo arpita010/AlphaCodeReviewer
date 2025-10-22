@@ -1,3 +1,5 @@
 package com.app.services;
 
-public interface CodeAnalyzerService {}
+public interface CodeAnalyzerService {
+  void analyze(String message);
+}
