@@ -1,6 +1,6 @@
 package com.app.controllers;
 
-import com.app.services.CodeAnalyzerService;
+import com.app.services.OllamaCodeAnalyzerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PingController {
 
-  private final CodeAnalyzerService codeAnalyzerService;
+  private final OllamaCodeAnalyzerService codeAnalyzerService;
 
   @GetMapping("")
   public String get() {
