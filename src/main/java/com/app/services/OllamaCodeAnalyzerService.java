@@ -1,7 +1,8 @@
 package com.app.services;
 
+import com.app.constants.KafkaTopicName;
+import com.app.data.CreateReviewCommentDto;
 import com.app.listeners.request.PullEditRequest;
-import com.app.listeners.request.PullRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 
 @Slf4j
 @Service
@@ -21,6 +21,7 @@ public class OllamaCodeAnalyzerService implements CodeAnalyzerService {
   private final OllamaChatModel ollamaChatModel;
   private final ObjectMapper objectMapper;
   private final CodeDiffFetcherService codeDiffFetcherService;
+  private final KafkaService kafkaService;
 
   public void call() {
     Prompt prompt = new Prompt("Tell me what is the temperature for " + "meerut " + "today");
@@ -46,6 +47,8 @@ public class OllamaCodeAnalyzerService implements CodeAnalyzerService {
     Prompt prompt = new Prompt(promptContent);
     ChatResponse response = ollamaChatModel.call(prompt);
     log.info("Response from chat client for code review : {}", response);
+    CreateReviewCommentDto createReviewCommentDto = createReviewComment(request, response);
+    publishCreateReviewCommentEvent(createReviewCommentDto);
   }
 
   private String readPromptFile() {
@@ -76,6 +79,31 @@ public class OllamaCodeAnalyzerService implements CodeAnalyzerService {
     String aiPromptContent = genericPrompt + "\n\n" + changes;
     log.info("Complete AI Prompt content : {}", aiPromptContent);
     return aiPromptContent;
+  }
+
+  private CreateReviewCommentDto createReviewComment(
+      PullEditRequest request, ChatResponse chatResponse) {
+    String issueNumber = request.getPullRequest().getNumber();
+    String fullName = request.getRepository().getFullName();
+    String title = request.getPullRequest().getTitle();
+    String body = request.getPullRequest().getBody();
+    CreateReviewCommentDto createReviewCommentDto =
+        CreateReviewCommentDto.builder()
+            .issueNumber(issueNumber)
+            .body(body)
+            .fullName(fullName)
+            .title(title)
+            .build();
+    return createReviewCommentDto;
+  }
+
+  private void publishCreateReviewCommentEvent(CreateReviewCommentDto createReviewCommentDto) {
+    try {
+      String message = objectMapper.writeValueAsString(createReviewCommentDto);
+      kafkaService.publishEvent(KafkaTopicName.CREATE_REVIEW_COMMENT, message);
+    } catch (Exception e) {
+      log.error("Error occurred while publishing create review comment event : {}", e.getMessage());
+    }
   }
 
   // TODO:

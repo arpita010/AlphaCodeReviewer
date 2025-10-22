@@ -10,12 +10,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PullEditRequest {
-  private String action;
-  private String number;
+public class Repository {
+  private String id;
 
-  @JsonProperty("pull_request")
-  private PullRequest pullRequest;
+  @JsonProperty("node_id")
+  private String nodeId;
 
-  private Repository repository;
+  private String name;
+
+  @JsonProperty("full_name")
+  private String fullName; // username+repoName
 }
