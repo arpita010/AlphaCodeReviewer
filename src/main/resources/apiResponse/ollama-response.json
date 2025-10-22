@@ -1,0 +1,55 @@
+{
+  "metadata": {
+    "id": "",
+    "model": "mistral",
+    "rateLimit": {
+      "requestsLimit": 0,
+      "requestsRemaining": 0,
+      "requestsReset": 0,
+      "tokensRemaining": 0,
+      "tokensLimit": 0,
+      "tokensReset": 0
+    },
+    "usage": {
+      "promptTokens": 488,
+      "completionTokens": 359,
+      "totalTokens": 847
+    },
+    "promptMetadata": [],
+    "empty": false
+  },
+  "results": [
+    {
+      "output": {
+        "messageType": "ASSISTANT",
+        "metadata": {
+          "messageType": "ASSISTANT"
+        },
+        "toolCalls": [],
+        "media": [],
+        "text": " ```json\n{\n\"summary\":\"Code review of the provided changes\",\n\"comments\":[\n{\n\"file\":\"ReadmeFile\",\n\"startLineNumber\":1,\n\"endLineNumber\":3,\n\"comment\":\"Consistency in coding style is important for readability. Consider using a consistent indentation style throughout the file.\",\n\"isBlockingComment\":false\n},\n{\n\"file\":\"ReadmeFile\",\n\"startLineNumber\":2,\n\"endLineNumber\":2,\n\"comment\":\"It's better to provide a proper explanation about the changes made in this pull request. This will help others understand the purpose of the changes.\",\n\"isBlockingComment\":false\n},\n{\n\"file\":\"ReadmeFile\",\n\"startLineNumber\":3,\n\"endLineNumber\":3,\n\"comment\":\"Adding humorous comments might not be appropriate in a professional context. It's best to stick with a formal tone throughout the readme file.\",\n\"isBlockingComment\":false\n},\n{\n\"file\":\"ReadmeFile\",\n\"startLineNumber\":null,\n\"endLineNumber\":null,\n\"comment\":\"Consider adding sections for installing and running the code, testing, and any other relevant information that users might need to get started.\",\n\"isBlockingComment\":false\n},\n{\n\"file\":\"ReadmeFile\",\n\"startLineNumber\":null,\n\"endLineNumber\":null,\n\"comment\":\"It would be beneficial to add links to the project's issue tracker and contribution guidelines, if available.\",\n\"isBlockingComment\":false\n}\n]\n}\n```"
+      },
+      "metadata": {
+        "finishReason": "stop",
+        "contentFilters": [],
+        "empty": true
+      }
+    }
+  ],
+  "result": {
+    "output": {
+      "messageType": "ASSISTANT",
+      "metadata": {
+        "messageType": "ASSISTANT"
+      },
+      "toolCalls": [],
+      "media": [],
+      "text": " ```json\n{\n\"summary\":\"Code review of the provided changes\",\n\"comments\":[\n{\n\"file\":\"ReadmeFile\",\n\"startLineNumber\":1,\n\"endLineNumber\":3,\n\"comment\":\"Consistency in coding style is important for readability. Consider using a consistent indentation style throughout the file.\",\n\"isBlockingComment\":false\n},\n{\n\"file\":\"ReadmeFile\",\n\"startLineNumber\":2,\n\"endLineNumber\":2,\n\"comment\":\"It's better to provide a proper explanation about the changes made in this pull request. This will help others understand the purpose of the changes.\",\n\"isBlockingComment\":false\n},\n{\n\"file\":\"ReadmeFile\",\n\"startLineNumber\":3,\n\"endLineNumber\":3,\n\"comment\":\"Adding humorous comments might not be appropriate in a professional context. It's best to stick with a formal tone throughout the readme file.\",\n\"isBlockingComment\":false\n},\n{\n\"file\":\"ReadmeFile\",\n\"startLineNumber\":null,\n\"endLineNumber\":null,\n\"comment\":\"Consider adding sections for installing and running the code, testing, and any other relevant information that users might need to get started.\",\n\"isBlockingComment\":false\n},\n{\n\"file\":\"ReadmeFile\",\n\"startLineNumber\":null,\n\"endLineNumber\":null,\n\"comment\":\"It would be beneficial to add links to the project's issue tracker and contribution guidelines, if available.\",\n\"isBlockingComment\":false\n}\n]\n}\n```"
+    },
+    "metadata": {
+      "finishReason": "stop",
+      "contentFilters": [],
+      "empty": true
+    }
+  }
+}

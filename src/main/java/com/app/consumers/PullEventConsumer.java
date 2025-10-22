@@ -4,6 +4,7 @@ import com.app.constants.KafkaConstants;
 import com.app.constants.ModelName;
 import com.app.factory.CodeAnalyzerServiceFactory;
 import com.app.services.CodeAnalyzerService;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +16,8 @@ public class PullEventConsumer {
   @Autowired private CodeAnalyzerServiceFactory factory;
   private CodeAnalyzerService codeAnalyzerService;
 
-  public PullEventConsumer() {
+  @PostConstruct
+  public void initialize() {
     codeAnalyzerService = factory.getInstance(ModelName.OLLAMA);
   }
 

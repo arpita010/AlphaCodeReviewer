@@ -7,12 +7,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -47,6 +49,7 @@ public class OllamaCodeAnalyzerService implements CodeAnalyzerService {
     Prompt prompt = new Prompt(promptContent);
     ChatResponse response = ollamaChatModel.call(prompt);
     log.info("Response from chat client for code review : {}", response);
+    printJson(response);
     CreateReviewCommentDto createReviewCommentDto = createReviewComment(request, response);
     publishCreateReviewCommentEvent(createReviewCommentDto);
   }
@@ -87,6 +90,7 @@ public class OllamaCodeAnalyzerService implements CodeAnalyzerService {
     String fullName = request.getRepository().getFullName();
     String title = request.getPullRequest().getTitle();
     String body = request.getPullRequest().getBody();
+    String content = extractResponseFromModelResponse(chatResponse);
     CreateReviewCommentDto createReviewCommentDto =
         CreateReviewCommentDto.builder()
             .issueNumber(issueNumber)
@@ -97,12 +101,27 @@ public class OllamaCodeAnalyzerService implements CodeAnalyzerService {
     return createReviewCommentDto;
   }
 
+  private String extractResponseFromModelResponse(ChatResponse chatResponse) {
+    List<Generation> list = chatResponse.getResults();
+    String response = null;
+
+  }
+
   private void publishCreateReviewCommentEvent(CreateReviewCommentDto createReviewCommentDto) {
     try {
       String message = objectMapper.writeValueAsString(createReviewCommentDto);
       kafkaService.publishEvent(KafkaTopicName.CREATE_REVIEW_COMMENT, message);
     } catch (Exception e) {
       log.error("Error occurred while publishing create review comment event : {}", e.getMessage());
+    }
+  }
+
+  private void printJson(ChatResponse chatResponse) {
+    try {
+      String str = objectMapper.writeValueAsString(chatResponse);
+      log.info("JSON string response : {}", str);
+    } catch (Exception e) {
+      log.error("Error occurred while printing chat response : {}", e.getMessage());
     }
   }
 
