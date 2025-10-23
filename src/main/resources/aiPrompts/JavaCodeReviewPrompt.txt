@@ -21,7 +21,7 @@ Your response should be in JSON format. The format should strictly be like follo
 "summary":"High level or overall code review summary",
 "comments":[
 {
-"file":"It should contain file path",
+"file":"It should contain full file path",
 "startLineNumber":5, // the first line number from where the issue arises
 "endLineNumber":10,// the last line number where the issue arises
 "comment":"",// Your feedback in constructive manner with full details

@@ -18,7 +18,7 @@ public class GithubClientService {
 
   @PostConstruct
   public void initialize() {
-    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.set("content-type", "application/vnd.github-commitcomment" + ".raw+json");
     headers.setBearerAuth(config.getGithubToken());
   }
 
@@ -40,6 +40,7 @@ public class GithubClientService {
           fullName,
           issueNumber,
           e.getMessage());
+      log.info("Errored Request : {}", request);
     }
   }
 }
