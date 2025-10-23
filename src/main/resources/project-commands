@@ -12,4 +12,6 @@ arpitamittal
 
 4. Create comment Documentation URL
  https://docs.github.com/en/rest/issues/comments?apiVersion=2022-11-28#create-an-issue-comment
- 
+
+5. Create comment on commit id SHA
+https://docs.github.com/en/rest/pulls/comments?apiVersion=2022-11-28#create-a-review-comment-for-a-pull-request
