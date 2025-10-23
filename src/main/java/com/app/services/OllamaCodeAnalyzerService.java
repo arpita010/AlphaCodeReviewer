@@ -1,10 +1,14 @@
 package com.app.services;
 
+import com.app.constants.ConverterType;
 import com.app.constants.KafkaTopicName;
 import com.app.data.CreateReviewCommentDto;
 import com.app.data.CustomReviewResponse;
+import com.app.factory.ConverterFactory;
 import com.app.listeners.request.PullEditRequest;
+import com.app.utils.Converter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.model.ChatResponse;
@@ -26,6 +30,17 @@ public class OllamaCodeAnalyzerService implements CodeAnalyzerService {
   private final ObjectMapper objectMapper;
   private final CodeDiffFetcherService codeDiffFetcherService;
   private final KafkaService kafkaService;
+  private Converter<CreateReviewCommentDto> createReviewCommentDtoConverter;
+  private Converter<List<CustomReviewResponse>> customReviewResponseConverter;
+  private final ConverterFactory converterFactory;
+
+  @PostConstruct
+  public void initialize() {
+    this.createReviewCommentDtoConverter =
+        converterFactory.getConverter(ConverterType.CREATE_REVIEW_COMMENT_DTO_CONVERTER);
+    this.customReviewResponseConverter =
+        converterFactory.getConverter(ConverterType.CUSTOM_REVIEW_RESPONSE_CONVERTER);
+  }
 
   public void call() {
     Prompt prompt = new Prompt("Tell me what is the temperature for " + "meerut " + "today");
@@ -108,7 +123,6 @@ public class OllamaCodeAnalyzerService implements CodeAnalyzerService {
 
   private String extractResponseFromModelResponse(ChatResponse chatResponse) {
     List<Generation> list = chatResponse.getResults();
-    String response = null;
     List<CustomReviewResponse> customReviewResponses = new ArrayList<>();
 
     for (Generation generation : list) {
@@ -119,12 +133,7 @@ public class OllamaCodeAnalyzerService implements CodeAnalyzerService {
         customReviewResponses.add(currentResponse);
       }
     }
-    try {
-      response = objectMapper.writeValueAsString(customReviewResponses);
-      log.info("Custom Review Responses in JSON string format : {}", response);
-    } catch (Exception e) {
-      log.error("Error occurred while writing custom review responses : {}", e.getMessage());
-    }
+    String response = customReviewResponseConverter.serialize(customReviewResponses);
     return response;
   }
 
@@ -147,12 +156,8 @@ public class OllamaCodeAnalyzerService implements CodeAnalyzerService {
   }
 
   private void publishCreateReviewCommentEvent(CreateReviewCommentDto createReviewCommentDto) {
-    try {
-      String message = objectMapper.writeValueAsString(createReviewCommentDto);
-      kafkaService.publishEvent(KafkaTopicName.CREATE_REVIEW_COMMENT, message);
-    } catch (Exception e) {
-      log.error("Error occurred while publishing create review comment event : {}", e.getMessage());
-    }
+    String message = createReviewCommentDtoConverter.serialize(createReviewCommentDto);
+    kafkaService.publishEvent(KafkaTopicName.CREATE_REVIEW_COMMENT, message);
   }
 
   private void printJson(ChatResponse chatResponse) {
@@ -163,10 +168,4 @@ public class OllamaCodeAnalyzerService implements CodeAnalyzerService {
       log.error("Error occurred while printing chat response : {}", e.getMessage());
     }
   }
-
-  // TODO:
-  // invoke model - title, body, diff.
-  // fetch review comments -
-  // Publish comment event
-  // push comment using github.
 }
