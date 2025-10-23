@@ -1,5 +1,6 @@
 package com.app.services;
 
+import com.app.client.GithubConfig;
 import com.app.client.response.commits.CommitResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,10 +20,12 @@ public class CodeDiffFetcherService {
   private final RestTemplate restTemplate;
   private HttpHeaders httpHeaders = new HttpHeaders();
   private final ObjectMapper mapper;
+  private final GithubConfig config;
 
   @PostConstruct
   void setHttpHeaders() {
     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+    httpHeaders.setBearerAuth(config.getGithubToken());
   }
 
   public String fetchDiff(String diffUrl) {
