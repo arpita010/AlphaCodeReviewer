@@ -41,5 +41,6 @@ public class PublishReviewCommentConsumer {
     CreateReviewCommentDto reviewComment = createReviewCommentDtoConverter.deserialize(message);
     List<CustomReviewResponse> customReviewResponses =
         customReviewResponseConverter.deserialize(reviewComment.getModelResponse());
+
   }
 }
