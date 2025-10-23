@@ -56,7 +56,10 @@ public class PullRequest {
   private Object[] labels;
   private Object milestone;
   private Boolean draft;
+
+  @JsonProperty("commits_url")
   private String commitsUrl;
+
   private String reviewCommentsUrl;
   private String commentsUrl;
   private String statusesUrl;

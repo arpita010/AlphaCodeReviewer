@@ -14,6 +14,7 @@ public class CreateReviewCommentDto {
   private String fullName;
   private String title;
   private String body;
+  private String lastCommitSha;
   private String modelResponse; // it will contain our custom converted json
   // response only.
 }

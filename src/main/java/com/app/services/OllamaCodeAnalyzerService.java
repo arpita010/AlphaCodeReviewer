@@ -100,6 +100,8 @@ public class OllamaCodeAnalyzerService implements CodeAnalyzerService {
             .fullName(fullName)
             .title(title)
             .modelResponse(content)
+            .lastCommitSha(
+                codeDiffFetcherService.getLastCommitSha(request.getPullRequest().getCommitsUrl()))
             .build();
     return createReviewCommentDto;
   }
