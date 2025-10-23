@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CustomReviewComment {
   private String file;
-  private String startFileNumber;
-  private String endFileNumber;
+  private String startLineNumber;
+  private String endLineNumber;
   private Boolean isBlockingComment;
   private String comment;
 }

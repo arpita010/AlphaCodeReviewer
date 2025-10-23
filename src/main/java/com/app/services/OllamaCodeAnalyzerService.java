@@ -2,6 +2,7 @@ package com.app.services;
 
 import com.app.constants.KafkaTopicName;
 import com.app.data.CreateReviewCommentDto;
+import com.app.data.CustomReviewResponse;
 import com.app.listeners.request.PullEditRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -97,6 +99,7 @@ public class OllamaCodeAnalyzerService implements CodeAnalyzerService {
             .body(body)
             .fullName(fullName)
             .title(title)
+            .modelResponse(content)
             .build();
     return createReviewCommentDto;
   }
@@ -104,7 +107,41 @@ public class OllamaCodeAnalyzerService implements CodeAnalyzerService {
   private String extractResponseFromModelResponse(ChatResponse chatResponse) {
     List<Generation> list = chatResponse.getResults();
     String response = null;
+    List<CustomReviewResponse> customReviewResponses = new ArrayList<>();
 
+    for (Generation generation : list) {
+      String textResponse = generation.getOutput().getText();
+      if (textResponse == null || textResponse.isEmpty()) continue;
+      CustomReviewResponse currentResponse = extractJsonFromTextResponse(textResponse);
+      if (currentResponse != null) {
+        customReviewResponses.add(currentResponse);
+      }
+    }
+    try {
+      response = objectMapper.writeValueAsString(customReviewResponses);
+      log.info("Custom Review Responses in JSON string format : {}", response);
+    } catch (Exception e) {
+      log.error("Error occurred while writing custom review responses : {}", e.getMessage());
+    }
+    return response;
+  }
+
+  private CustomReviewResponse extractJsonFromTextResponse(String text) {
+    String modifiedText = text.replaceAll("\n", "");
+    log.info("Modified text : {}", modifiedText);
+    int startIndex = modifiedText.indexOf("```json") + "```json".length();
+    int endIndex = modifiedText.lastIndexOf("```");
+    String jsonResponse = modifiedText.substring(startIndex, endIndex).trim();
+    log.info("JSON response after extraction : {}", jsonResponse);
+    try {
+      CustomReviewResponse response =
+          objectMapper.readValue(jsonResponse, CustomReviewResponse.class);
+      log.info("Custom Review Response : {}", response);
+      return response;
+    } catch (Exception e) {
+      log.error("Error occurred while mapping custom review response : {}", e.getMessage());
+    }
+    return null;
   }
 
   private void publishCreateReviewCommentEvent(CreateReviewCommentDto createReviewCommentDto) {
